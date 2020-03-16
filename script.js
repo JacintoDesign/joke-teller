@@ -7,10 +7,10 @@ function getJokes() {
       if (data.setup) {
           // console.log(data.setup);
           // console.log(data.delivery);
-          joke = data.setup + ',,.' + data.delivery;
+          joke = data.setup + ' ... ' + data.delivery;
       } else {
           // console.log(data.joke);
-          joke = (data.joke).replace(/\\n/gi, ',,.');
+          joke = (data.joke).replace(/\\n/gi, ' ... ');
       }
       tellMe(joke);
   });
@@ -19,7 +19,7 @@ function getJokes() {
 function tellMe(joke) {
   console.log(joke);
   let jokeString = joke.trim().replace(/ /g, '%20');
-  console.log(jokeString);
+  // console.log(jokeString);
 
   VoiceRSS.speech({
     key: 'e985f868e96c46d9b0789c3855350152',

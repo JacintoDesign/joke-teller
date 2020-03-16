@@ -1,5 +1,3 @@
-let jokeString;
-const audioEl = document.getElementById('audio');
 
 function getJokes() {
   fetch('https://sv443.net/jokeapi/v2/joke/Programming')
@@ -20,78 +18,20 @@ function getJokes() {
 
 function tellMe(joke) {
   console.log(joke);
-  jokeString = joke.trim().replace(/ /g, '%20');
-  // .replace(/\'/g, '%27').replace(/\"/g, '%22');
+  let jokeString = joke.trim().replace(/ /g, '%20');
   console.log(jokeString);
-  let jokeRequest = `http://api.voicerss.org/?key=e985f868e96c46d9b0789c3855350152&src=${jokeString}&hl=en-us`;
-  console.log(jokeRequest);
 
-  // loads remote file using fetch() streams and "pipe" it to webaudio API
-  // remote file must have CORS enabled if on another domain
-  function appendBuffer( buffer1, buffer2 ) {
-    var tmp = new Uint8Array( buffer1.byteLength + buffer2.byteLength );
-    tmp.set( new Uint8Array( buffer1 ), 0 );
-    tmp.set( new Uint8Array( buffer2 ), buffer1.byteLength );
-    return tmp.buffer;
-  }
-
-  function play(urlMusic) {
-    // let apiUrl = "http://api.voicerss.org/?key=e985f868e96c46d9b0789c3855350152&src=Hello%20world!&hl=en-us";
-    let apiUrl = `http://api.voicerss.org/?key=e985f868e96c46d9b0789c3855350152&src=${jokeString}&hl=en-us&c=mp3&f=48khz_16bit_stereo`;
-    var context = new (window.AudioContext || window.webkitAudioContext)();
-    var audioStack = [];
-    var nextTime = 0;
-
-    fetch(apiUrl).then(function(response) {
-      var reader = response.body.getReader();
-      var header = null;//first 44bytes
-
-      function read() {
-        return reader.read().then(({ value, done })=> {
-          var audioBuffer = null;
-          if (header == null){
-            //copy first 44 bytes (wav header)
-            header = value.buffer.slice(0,44);
-            audioBuffer = value.buffer;
-          } else {
-            audioBuffer = appendBuffer(header, value.buffer);
-          }
-          
-          context.decodeAudioData(audioBuffer, function(buffer) {
-
-            audioStack.push(buffer);
-            if (audioStack.length) {
-                scheduleBuffers();
-            }
-          }, function(err) {
-            console.log("err(decodeAudioData): "+err);
-          });
-          if (done) {
-            console.log('done');
-            return;
-          }
-          //read next buffer
-          read();
-        });
-      }
-      read();
-    })
-
-    function scheduleBuffers() {
-        while ( audioStack.length) {
-            var buffer    = audioStack.shift();
-            var source    = context.createBufferSource();
-            source.buffer = buffer;
-            source.connect(context.destination);
-            if (nextTime == 0)
-                nextTime = context.currentTime + 0.5;  /// add 50ms latency to work well across systems - tune this if you like
-            source.start(nextTime);
-            nextTime += source.buffer.duration; // Make the next buffer wait the length of the last buffer before being played
-        };
-    }
-  }
-
-  var urlMusic = '/beats1.mp3'
-  play(urlMusic);
+  VoiceRSS.speech({
+    key: 'e985f868e96c46d9b0789c3855350152',
+    src: jokeString,
+    hl: 'en-us',
+    r: 0, 
+    c: 'mp3',
+    f: '44khz_16bit_stereo',
+    ssml: false
+  });
 
 }
+
+// Voice RSS Javascript SDK
+"use strict";var VoiceRSS={speech:function(e){this._validate(e),this._request(e)},_validate:function(e){if(!e)throw"The settings are undefined";if(!e.key)throw"The API key is undefined";if(!e.src)throw"The text is undefined";if(!e.hl)throw"The language is undefined";if(e.c&&"auto"!=e.c.toLowerCase()){var a=!1;switch(e.c.toLowerCase()){case"mp3":a=(new Audio).canPlayType("audio/mpeg").replace("no","");break;case"wav":a=(new Audio).canPlayType("audio/wav").replace("no","");break;case"aac":a=(new Audio).canPlayType("audio/aac").replace("no","");break;case"ogg":a=(new Audio).canPlayType("audio/ogg").replace("no","");break;case"caf":a=(new Audio).canPlayType("audio/x-caf").replace("no","")}if(!a)throw"The browser does not support the audio codec "+e.c}},_request:function(e){var a=this._buildRequest(e),t=this._getXHR();t.onreadystatechange=function(){if(4==t.readyState&&200==t.status){if(0==t.responseText.indexOf("ERROR"))throw t.responseText;new Audio(t.responseText).play()}},t.open("POST","https://api.voicerss.org/",!0),t.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=UTF-8"),t.send(a)},_buildRequest:function(e){var a=e.c&&"auto"!=e.c.toLowerCase()?e.c:this._detectCodec();return"key="+(e.key||"")+"&src="+(e.src||"")+"&hl="+(e.hl||"")+"&r="+(e.r||"")+"&c="+(a||"")+"&f="+(e.f||"")+"&ssml="+(e.ssml||"")+"&b64=true"},_detectCodec:function(){var e=new Audio;return e.canPlayType("audio/mpeg").replace("no","")?"mp3":e.canPlayType("audio/wav").replace("no","")?"wav":e.canPlayType("audio/aac").replace("no","")?"aac":e.canPlayType("audio/ogg").replace("no","")?"ogg":e.canPlayType("audio/x-caf").replace("no","")?"caf":""},_getXHR:function(){try{return new XMLHttpRequest}catch(e){}try{return new ActiveXObject("Msxml3.XMLHTTP")}catch(e){}try{return new ActiveXObject("Msxml2.XMLHTTP.6.0")}catch(e){}try{return new ActiveXObject("Msxml2.XMLHTTP.3.0")}catch(e){}try{return new ActiveXObject("Msxml2.XMLHTTP")}catch(e){}try{return new ActiveXObject("Microsoft.XMLHTTP")}catch(e){}throw"The browser does not support HTTP request"}};

@@ -31,6 +31,10 @@ button {
     font-size: 20px;
 }
 
+button:disabled, button:disabled:hover {
+    filter: brightness(30%);
+}
+
 button:hover {
     filter: brightness(98%);
 }

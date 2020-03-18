@@ -1,6 +1,9 @@
+const button = document.getElementById('button');
+button.addEventListener('click', getJokes);
 
+// Get jokes from Joke API
 function getJokes() {
-  fetch('https://sv443.net/jokeapi/v2/joke/Programming')
+  fetch('https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw,racist,sexist')
   .then(res => res.json())
   .then(data => {
       //console.log(data);
@@ -8,14 +11,27 @@ function getJokes() {
           // console.log(data.setup);
           // console.log(data.delivery);
           joke = data.setup + ' ... ' + data.delivery;
+          jokeLength = joke.length + 150;
       } else {
           // console.log(data.joke);
           joke = (data.joke).replace(/\\n/gi, ' ... ');
+          jokeLength = joke.length;
       }
       tellMe(joke);
+      button.disabled = true;
+      console.log(joke.length);
+      // dynamically changing amount of time for button to be disabled
+      if (jokeLength < 80) {
+        setTimeout(() => button.disabled = false, 4000);
+      } else if (jokeLength >= 80) {
+        setTimeout(() => button.disabled = false, 7000);
+      } else if (jokeLength >= 160) {
+        setTimeout(() => button.disabled = false, 10000);
+      }
   });
 }
 
+// Using the Joke to return audio data from text-to-speech API
 function tellMe(joke) {
   console.log(joke);
   let jokeString = joke.trim().replace(/ /g, '%20');

@@ -4,19 +4,19 @@ button.addEventListener('click', getJokes);
 // Get jokes from Joke API
 function getJokes() {
   // fetch('https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw,racist,sexist')
-  fetch('https://sv443.net/jokeapi/v2/joke/Any')
+  fetch('https://sv443.net/jokeapi/v2/joke/Any?blacklistFlags=nsfw,racist,sexist')
   .then(res => res.json())
   .then(data => {
       //console.log(data);
       if (data.setup) {
-          // console.log(data.setup);
-          // console.log(data.delivery);
-          joke = data.setup + ' ... ' + data.delivery;
-          jokeLength = joke.length + 150;
+        // console.log(data.setup);
+        // console.log(data.delivery);
+        joke = data.setup + ' ... ' + data.delivery;
+        jokeLength = joke.length + 150;
       } else {
-          // console.log(data.joke);
-          joke = (data.joke).replace(/\\n/gi, ' ... ');
-          jokeLength = joke.length;
+        // console.log(data.joke);
+        joke = (data.joke).replace(/\\n/gi, ' ... ');
+        jokeLength = joke.length;
       }
       tellMe(joke);
       button.disabled = true;

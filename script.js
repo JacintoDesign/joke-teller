@@ -4,7 +4,7 @@ button.addEventListener('click', getJokes);
 // Get jokes from Joke API
 function getJokes() {
   // fetch('https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw,racist,sexist')
-  fetch('https://sv443.net/jokeapi/v2/joke/Any?blacklistFlags=nsfw,racist,sexist')
+  fetch('https://sv443.net/jokeapi/v2/joke/Miscellaneous,Dark?blacklistFlags=nsfw,religious,racist,sexist')
   .then(res => res.json())
   .then(data => {
       //console.log(data);

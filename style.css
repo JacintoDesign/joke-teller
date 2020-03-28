@@ -39,6 +39,10 @@ button:hover {
     filter: brightness(98%);
 }
 
+button:active {
+    transform: scale(.95);
+}
+
 button:focus {
     outline: none;
 }

@@ -1,21 +1,20 @@
-const button = document.getElementById('button');
-button.addEventListener('click', getJokes);
+const button = document.getElementById("button");
+button.addEventListener("click", getJokes);
 
 // Get jokes from Joke API
 function getJokes() {
-  fetch('https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw,racist,sexist')
-  // fetch('https://sv443.net/jokeapi/v2/joke/Miscellaneous,Dark?blacklistFlags=nsfw,religious,racist,sexist')
-  .then(res => res.json())
-  .then(data => {
+  fetch("https://sv443.net/jokeapi/v2/joke/Programming?blacklistFlags=nsfw,racist,sexist")
+    .then((res) => res.json())
+    .then((data) => {
       //console.log(data);
       if (data.setup) {
         // console.log(data.setup);
         // console.log(data.delivery);
-        joke = data.setup + ' ... ' + data.delivery;
+        joke = data.setup + " ... " + data.delivery;
         jokeLength = joke.length + 150;
       } else {
         // console.log(data.joke);
-        joke = (data.joke).replace(/\\n/gi, ' ... ');
+        joke = data.joke.replace(/\\n/gi, " ... ");
         jokeLength = joke.length;
       }
       tellMe(joke);
@@ -23,31 +22,30 @@ function getJokes() {
       console.log(joke.length);
       // dynamically changing amount of time for button to be disabled
       if (jokeLength < 80) {
-        setTimeout(() => button.disabled = false, 4000);
+        setTimeout(() => (button.disabled = false), 4000);
       } else if (jokeLength >= 80) {
-        setTimeout(() => button.disabled = false, 7000);
+        setTimeout(() => (button.disabled = false), 7000);
       } else if (jokeLength >= 160) {
-        setTimeout(() => button.disabled = false, 10000);
+        setTimeout(() => (button.disabled = false), 10000);
       }
-  });
+    });
 }
 
 // Using the Joke to return audio data from text-to-speech API
 function tellMe(joke) {
   console.log(joke);
-  let jokeString = joke.trim().replace(/ /g, '%20');
+  let jokeString = joke.trim().replace(/ /g, "%20");
   // console.log(jokeString);
 
   VoiceRSS.speech({
-    key: 'e985f868e96c46d9b0789c3855350152',
+    key: "e985f868e96c46d9b0789c3855350152",
     src: jokeString,
-    hl: 'en-us',
-    r: 0, 
-    c: 'mp3',
-    f: '44khz_16bit_stereo',
+    hl: "en-us",
+    r: 0,
+    c: "mp3",
+    f: "44khz_16bit_stereo",
     ssml: false
   });
-
 }
 
 // Voice RSS Javascript SDK

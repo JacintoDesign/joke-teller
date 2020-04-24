@@ -10,9 +10,9 @@ function toggleButton() {
 }
 
 // Passing Joke to VoiceRSS API
-function tellMe(jokeText) {
-  const jokeString = jokeText.trim().replace(/ /g, '%20');
-
+function tellMe(joke) {
+  const jokeString = joke.trim().replace(/ /g, '%20');
+  // VoiceRSS Speech Parameters
   VoiceRSS.speech({
     key: 'e985f868e96c46d9b0789c3855350152',
     src: jokeString,
@@ -31,18 +31,18 @@ async function getJokes() {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    // Assign Two Part or One Part Joke
+    // Assign One or Two Part Joke
     if (data.setup) {
       joke = `${data.setup} ... ${data.delivery}`;
     } else {
-      joke = data.joke.replace(/\\n/gi, ' ... ');
+      joke = data.joke;
     }
     // Use Text-to-Speech
     tellMe(joke);
     // Disable Button
     toggleButton();
   } catch (error) {
-    // Do something with an error
+    // Catch Error Here
   }
 }
 

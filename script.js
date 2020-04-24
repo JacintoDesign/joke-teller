@@ -10,10 +10,8 @@ function toggleButton() {
 }
 
 // Passing Joke to VoiceRSS API
-async function tellMe(jokeText) {
-  // console.log(jokeText);
+function tellMe(jokeText) {
   const jokeString = jokeText.trim().replace(/ /g, '%20');
-  // console.log(jokeString);
 
   VoiceRSS.speech({
     key: 'e985f868e96c46d9b0789c3855350152',
@@ -33,18 +31,16 @@ async function getJokes() {
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    // console.log(data);
+    // Assign Two Part or One Part Joke
     if (data.setup) {
-      // console.log(data.setup);
-      // console.log(data.delivery);
       joke = `${data.setup} ... ${data.delivery}`;
     } else {
-      // console.log(data.joke);
       joke = data.joke.replace(/\\n/gi, ' ... ');
     }
+    // Use Text-to-Speech
     tellMe(joke);
+    // Disable Button
     toggleButton();
-    // console.log(joke.length);
   } catch (error) {
     // Do something with an error
   }

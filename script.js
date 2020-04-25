@@ -9,7 +9,7 @@ function toggleButton() {
   button.disabled = !button.disabled;
 }
 
-// Passing Joke to VoiceRSS API
+// VoiceRSS Speech Function
 function tellMe(joke) {
   const jokeString = joke.trim().replace(/ /g, '%20');
   // VoiceRSS Speech Parameters
@@ -37,7 +37,7 @@ async function getJokes() {
     } else {
       joke = data.joke;
     }
-    // Use Text-to-Speech
+    // Passing Joke to VoiceRSS API
     tellMe(joke);
     // Disable Button
     toggleButton();
